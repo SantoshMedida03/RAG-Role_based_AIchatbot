@@ -1,247 +1,190 @@
-# 🤖 FinSolve Role-Based Chatbot
+ 📌 Overview
 
-A secure, intelligent chatbot powered by **LLMs + Vector Search (RAG)** — with **role-based access control (RBAC)** for Finance, HR, Engineering, Marketing, Employees, and C-Level Executives.
+This project is a Role-Based AI Chatbot designed for organizations to securely query internal documents using Retrieval-Augmented Generation (RAG). Each department such as HR, Finance, Marketing, Engineering, and General can access only their own documents, ensuring strict data isolation, privacy, and security.
 
----
+The system uses LangChain for orchestration, ChromaDB for vector storage, and Ollama running LLaMA 3.1 locally as the Large Language Model (LLM). All AI inference happens locally on the machine, eliminating dependency on cloud APIs and preventing sensitive data from leaving the system.
 
-## 🧩 Problem Background
+🎯 Key Features
 
-**FinSolve Technologies**,  a leading FinTech company, was experiencing communication delays and fragmented document access across teams like Finance, HR, Marketing, Engineering, and C-Level Executives. These issues led to slower decision-making and operational inefficiencies, as teams lacked a centralized, secure way to access internal knowledge specific to their roles.
+🔐 Role-Based Access Control (RBAC) – Department-wise document isolation
 
----
+📚 RAG Architecture – Accurate answers using retrieval + generation
 
-## 🧠 Solution Overview
-To address this issue, an internal AI chatbot was developed using Retrieval Augmented Generation (RAG) and Role-Based Access Control (RBAC). It ensures that every user receives accurate, secure, and role-relevant information instantly.
+🧠 Local LLM with Ollama – No cloud dependency, complete data privacy
 
-This chatbot solves FinSolve's data access problem using:
-- 🧠 **RAG (Retrieval-Augmented Generation)** via LLaMA 3 (Ollama)
-- 🔐 **Role-Based Filtering** at the vector search level
-- ⚡ **FastAPI + Streamlit** for interactive chat and login
-- 🧾 **Documents** stored per department with metadata
+🗂️ Department-wise Document Organization – HR, Finance, Marketing, Engineering, General
 
----
+⚡ Fast Vector Search – Powered by ChromaDB
 
-## 👥 Role-Based Access Control (RBAC)
+📄 Supports Unstructured & Structured Data – Markdown and CSV files
 
-| Role               | Permissions                                                                 |
-|--------------------|-----------------------------------------------------------------------------|
-| C-Level Executives | Full unrestricted access to all documents                                   |
-| Finance Team       | Financial reports, expenses, reimbursements                                 |
-| Marketing Team     | Campaign performance, customer insights, sales data                         |
-| HR Team            | Employee handbook, attendance, leave, payroll                               |
-| Engineering Dept.  | System architecture, deployment, CI/CD                                      |
-| Employees          | General information (FAQs, company policies, events)                        |
+🏢 Enterprise-Ready Design – Secure and scalable architecture
 
----
+🛠️ Tech Stack
 
-## 🚀 Features
+Language: Python
 
-### 🔐 Secure Role-Based Search
-- Each user sees **only** their permitted data
-- C-level users get **unfiltered** access
+Backend: FastAPI
 
-### 💬 Interactive Chat Interface
-- Built with **Streamlit**
-- Login panel with session persistence
-- Typing animation + Chat history
-- 👍👎 feedback buttons
-- Role access transparency shown in every response
+Frontend: Streamlit
 
-### 🔎 Context-Aware Retrieval
-- Vector DB powered by **Chroma**
-- Embeds `.md` files per department with metadata (`role`, `category`)
-- Queries run through vector similarity → LLM → Answer
+RAG Framework: LangChain
 
+Vector Database: ChromaDB
 
----
+LLM Runtime: Ollama (LLaMA 3.1)
 
-## 🛠 Tech Stack
+Data Formats: Markdown, CSV
 
-| Layer         | Tool/Library             |
-|---------------|--------------------------|
-| Frontend      | Streamlit                |
-| Backend       | FastAPI                  |
-| Embeddings    | SentenceTransformers     |
-| Vector DB     | ChromaDB                 |
-| LLM           | LLaMA 3 (via Ollama)     |
-| Doc Format    | Markdown (.md)           |
+🏗️ System Architecture
+User
+  ↓
+Streamlit Frontend
+  ↓
+FastAPI Backend
+  ↓
+LangChain (RAG Pipeline)
+  ↓
+ChromaDB (Vector Search + Role Filtering)
+  ↓
+Ollama (Local LLaMA 3.1)
+  ↓
+AI Response
 
----
+🔄 How It Works
 
-## 🧪 Sample Users & Roles
+Documents are stored department-wise inside the resources/data/ directory
 
-| Username | Password     | Role              |
-|----------|--------------|-------------------|
-| Alice    | ceopass      | c-levelexecutives |
-| Bob      | employeepass | employee          |
-| Tony     | password123  | engineering       |
-| Bruce    | securepass   | marketing         |
-| Sam      | financepass  | finance           |
-| Natasha  | hrpass123    | hr                |
+All documents are embedded and indexed into ChromaDB using LangChain
 
----
+User selects their role and enters a query
 
-## 🚀 Project Architecture
+System retrieves only documents permitted for that role
 
-```mermaid
-flowchart TD
-    subgraph Frontend
-        ST[Streamlit UI<br><b>frontend.py</b>]
-    end
+Retrieved context is sent to Ollama (LLaMA 3.1) for answer generation
 
-    subgraph Backend
-        API[FastAPI App<br><b>main.py</b>]
-    end
+AI returns a secure, role-filtered response
 
-    subgraph DB
-        CH[ChromaDB<br><b>chroma_db + chroma_store</b>]
-    end
-
-    subgraph Model
-        LLM[LLaMA3 via Ollama]
-    end
-
-    subgraph Data
-        Files[Markdown / Text Files<br><b>resources/data</b>]
-    end
-
-    ST --> API
-    API --> CH
-    API --> LLM
-    CH --> LLM
-    Files --> CH
-    LLM --> API
-    API --> ST
-```
-
-## 📁 Project Structure
-
-```
-DS-RPC-01/
+📁 Project Structure
+role_based_aichatbot/
+│
 ├── app/
-│   ├── __pycache__/
-│   ├── chroma_db/
-│   ├── chroma_store/
-│   ├── embed_documents.py
+│   ├── main.py
 │   ├── frontend.py
-│   └── main.py
+│   ├── embed_documents.py
+│   └── chroma_store/
 │
 ├── resources/
 │   └── data/
-│       ├── engineering/
-│       ├── finance/
-│       ├── general/
 │       ├── hr/
-│       └── marketing/
+│       ├── finance/
+│       ├── marketing/
+│       ├── engineering/
+│       └── general/
 │
-├── venv/
-│
-├── .gitignore
-├── .python-version
+├── requirements.txt
 ├── pyproject.toml
-├── README.md
-└── requirements.txt
-```
+└── README.md
 
+⚙️ Setup & Installation
+1️⃣ Clone the repository
+git clone https://github.com/SantoshMedida03/RAG-Role_based_AIchatbot.git
+cd RAG-Role_based_AIchatbot
 
-## ⚙️ Setup Instructions
-
-### 1. Clone the repository
-
-```bash
-git clone https://github.com/sakshcc/role_based_aichatbot
-cd role-based-chatbot
-```
-
-#### 2. 🔧 Backend Setup (FastAPI + LLaMA 3 via Ollama)
-
-Step into the backend app and create a virtual environment:
-
-```bash
-cd app
+2️⃣ Create virtual environment
 python -m venv venv
-````
+venv\Scripts\activate   # On Windows
 
-Activate the virtual environment:
+3️⃣ Install dependencies
+pip install -r requirements.txt
 
-```bash
-venv\Scripts\activate     # On Windows
-# OR
-source venv/bin/activate  # On Mac/Linux
-````
+🧠 Setup Ollama (Local LLM)
 
-Install the dependencies:
+Install Ollama from: https://ollama.com
 
-```bash
-pip install -r ../requirements.txt
-```
+Start Ollama and pull LLaMA 3.1 model:
 
-In a new terminal, start the LLaMA 3 model using Ollama:
+ollama run llama3.1
 
-```bash
-ollama run llama3
-```
-📝 Keep this terminal open — it runs the local LLM engine.
-The first run will download the model (~3–4 GB).
 
-Go back to the backend terminal and start the FastAPI server:
+Keep this running in a separate terminal.
 
-```bash
-uvicorn main:app --reload
-```
+📥 Embed Documents (Important Step)
 
-### 3. 💬 Frontend Setup (Streamlit UI)
-In another new terminal:
+Before running the chatbot, you must embed all documents:
 
-```bash
-cd frontend
-streamlit run frontend.py
-```
-🔗 Visit: http://localhost:8501
-
-### 4. 📄 Embed Documents (Run Once Before Use)
-To embed documents into ChromaDB:
-
-```bash
+cd app
 python embed_documents.py
-```
 
-This script:
-Loads documents from the data/ folder
-Generates embeddings using sentence-transformers
-Stores them in ChromaDB with role-based metadata
 
-✅ Once these steps are done, your role-based chatbot is fully set up and ready to use! 
+This will:
 
----
+Read documents from resources/data/
 
-## 🔧 Extending & Customizing
+Generate embeddings
 
-✅ **Add new roles:**  
-- Create a new folder in `resources/data/` named after the new department (e.g., `resources/data/legal/`).
-- Add your `.md` documents there.
-- Update user credentials and roles in your `main.py` or wherever your user-role DB/auth is managed.
+Store them in ChromaDB
 
-✅ **Add new document types:**  
-- Extend the file parsing logic inside `app/embed_documents.py` to handle more than `.md` files (like `.pdf`, `.csv`, etc.).
+▶️ Run the Application
+Start Backend
+python main.py
 
-✅ **Change embedding model:**  
-- Inside `app/embed_documents.py`, change the line where you set:
-  ```python
-  EMBEDDING_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
-  ```
-  to any other `sentence-transformers` model.
+Start Frontend
+streamlit run frontend.py
 
-✅ **Switch LLM:**  
-- Update the `model` name in your FastAPI code (`app/main.py`), where you send the prompt to Ollama:
-  ```python
-  response = ollama.chat(model="llama3", messages=...)
-  ```
-  Replace `"llama3"` with another Ollama-supported model (like `"mistral"`, `"codellama"`, etc.).
 
----
+Now open the browser and start chatting 🚀
 
-## 📝 License
-This project is for internal use at **FinSolve Technologies**.  
-All source code, models, and documentation are proprietary and confidential.
+🔐 Security & Privacy
 
+All processing is local
+
+No data is sent to external APIs
+
+Role-based filtering is enforced at the retrieval layer
+
+Prevents cross-department data access
+
+💡 Use Cases
+
+Internal company knowledge assistant
+
+Secure HR/Finance/Engineering chatbot
+
+Enterprise AI assistant
+
+Privacy-first AI applications
+
+🧠 Why This Project?
+
+This project demonstrates:
+
+Real-world RAG implementation
+
+Role-based system design
+
+Local LLM deployment using Ollama
+
+Enterprise-level security awareness
+
+Practical GenAI engineering skills
+
+📌 One-Line Summary
+
+A secure, role-based RAG AI chatbot using LangChain, ChromaDB, and Ollama (LLaMA 3.1) for private enterprise document querying.
+
+⭐ Author
+
+Santosh Medida
+B.Tech CSE (2026) | AI/ML & GenAI Enthusiast
+GitHub: https://github.com/santoshmedida03
+
+🙌 Acknowledgements
+
+LangChain
+
+ChromaDB
+
+Ollama
+
+Meta AI (LLaMA 3.1)
